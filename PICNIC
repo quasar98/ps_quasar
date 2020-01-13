@@ -1,0 +1,55 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+int TC,n,m;
+bool areFriends[10][10];
+bool madePair[10];
+
+void init(void) {
+	for (int i = 0; i < n; i++) {
+		madePair[i] = false;
+		for (int j = 0; j < n; j++)
+			areFriends[i][j] = false;
+	}
+	return;
+}
+
+int countPair(int start) {
+	for (int i = 0; i < start; i++) if (!madePair[i]) return 0;
+	bool finished = true;
+	for (int i = start; i < n; i++) if (!madePair[i]) finished = false;
+	if (finished) return 1;
+
+	int ret = 0;
+	for (int i = start; i < n; i++) {
+		for (int j = i+1; j < n; j++) {
+			if (!madePair[i] && !madePair[j] && areFriends[i][j]) {
+				madePair[i] = madePair[j] = true;
+				ret += countPair(i+1);
+				madePair[i] = madePair[j] = false;
+			}
+		}
+	}
+	return ret;
+}
+
+void input(int x) {
+	int f1, f2;
+	while (x--) {
+		scanf("%d %d", &f1, &f2);
+		areFriends[min(f1, f2)][max(f1, f2)] = true;
+	}
+	return;
+}
+
+int main() {
+	scanf("%d", &TC);
+	while (TC--) {
+		scanf("%d %d", &n, &m);
+		input(m);
+		printf("%d\n", countPair(0));
+		init();
+	}
+	return 0;
+}
